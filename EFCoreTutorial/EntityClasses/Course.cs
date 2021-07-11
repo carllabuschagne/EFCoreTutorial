@@ -8,7 +8,9 @@ namespace EFCoreTutorial.EntityClasses
 {
     public class Course
     {
-        public int CourseId { get; set; }
+        public int Id { get; set; }
         public string CourseName { get; set; }
+        public IList<Grade> Grades { get; set; }
+
     }
 }

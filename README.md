@@ -358,7 +358,7 @@ public class Grade
 
 Convention 3: Add a **reference** and a **collection** navigation property. (Apply convention 1 & 2)
 
-```c#
+```C#
 public class Student
 {
     public int Id { get; set; }
@@ -377,27 +377,176 @@ public class Grade
 ```
 
 <br />
+<br />
 
+### One to One Relationship
 
-Convention 3: Add a **reference** and a **collection** navigation property. (Apply convention 1 & 2)
+Add a **reference** navigation property at both ends.
 
-```c#
+```C#
 public class Student
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    
-    public Grade Grade { get; set; }
+       
+    public StudentAddress Address { get; set; }
 }
 
-public class Grade
+public class StudentAddress
 {
-    public int GradeID { get; set; }
-    public string GradeName { get; set; }
-    
-    public ICollection<Student> Students { get; set; }
+    public int StudentAddressId { get; set; }
+    public string Address { get; set; }
+    public string City { get; set; }
+    public string State { get; set; }
+    public string Country { get; set; }
+
+    public int StudentId { get; set; }
+    public Student Student { get; set; }
 }
 ```
 
 <br />
+
+### Data Annotations 
+
+```C#
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+```
+
+
+<br />
+
+**Table**
+
+```C#
+[Table(string name, Properties:[Schema = string])]
+```
+
+* **Name**: Name of the Db table.
+* **Schema**: Name of the Db Schema in which a specified table should be created. (Optional)
+
+```C#
+[Table("StudentMaster")]
+public class Student
+{
+    public int StudentID { get; set; }
+    public string StudentName { get; set; }
+}
+```
+
+<br />
+
+
+```C#
+[Table("StudentMaster", Schema="Admin")]
+public class Student
+{
+    public int StudentID { get; set; }
+    public string StudentName { get; set; }
+}
+```
+
+
+<br />
+
+**Column**
+
+```C#
+[Column (string name, Properties:[Order = int],[TypeName = string])]
+```
+
+* **Name**: Name of the Db table.
+* **Order**: Order of a column, starting with zero index. (Optional)
+* **TypeName**: Data type of a column. (Optional)
+
+```C#
+public class Student
+{
+    public int StudentID { get; set; }
+    
+    [Column("Name", Order = 1)]
+    public string StudentName { get; set; }
+
+    [Column("DoB", TypeName="DateTime2", Order = 5)]
+    public DateTime DateOfBirth { get; set; }
+
+    public byte[] Photo { get; set; }
+
+    public decimal Height { get; set; }
+
+    public float Weight { get; set; }
+}
+```
+
+
+<br />
+
+**Key**
+
+```C#
+[Key]
+```
+Primary Key
+
+```C#
+public class Student
+{
+    [Key]
+    [Column(Order=1)]
+    public int StudentKey { get; set; }
+     
+    [Key]
+    [Column(Order=2)]
+    public int AdmissionNum { get; set; }
+     
+    public string StudentName { get; set; }
+}
+```
+
+
+<br />
+
+**NotMapped**
+
+```C#
+[NotMapped]
+```
+You can apply the [NotMapped] attribute on one or more properties for which you do NOT want to create a corresponding column in a database table.
+
+```C#
+public class Student
+{
+    public int StudentId { get; set; }
+    public string StudentName { get; set; }
+        
+    [NotMapped]
+    public int Age { get; set; }
+}
+```
+
+
+<br />
+
+**ForeignKey**
+
+```C#
+[ForeignKey(name string)]
+```
+* **Name**: Name of the associated navigation property or the name of the associated foreign key(s).
+
+```C#
+public class Student
+{
+    public int StudentId { get; set; }
+    public string StudentName { get; set; }
+        
+    [NotMapped]
+    public int Age { get; set; }
+}
+```
+
+
+
+
 
