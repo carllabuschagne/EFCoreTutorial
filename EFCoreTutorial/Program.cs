@@ -20,13 +20,13 @@ namespace EFCoreTutorial
 			var context = new SchoolContext();
 
 			var StudentsWithSameName = context.Students
-				.Where(s => s.Name == "David Hasselhoff")
+				.Where(s => s.FirstName == "David Hasselhoff")
 				.ToList();
 
 
 			foreach(Student s in StudentsWithSameName)
 			{
-				Console.WriteLine("name:" + s.Name);
+				Console.WriteLine("name:" + s.FirstName);
 			}
 
 			
@@ -39,7 +39,7 @@ namespace EFCoreTutorial
 			{
 				Student _student = new Student();
 
-				_student.Name = "David Hasselhoff";
+				_student.FirstName = "David Hasselhoff";
 
 				context.Students.Add(_student);
 				context.SaveChanges();

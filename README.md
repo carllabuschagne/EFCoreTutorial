@@ -224,3 +224,180 @@ var student = context.Students.Where(s => s.FirstName == "Bill")
                         .FirstOrDefault();
 ```
 
+
+<br />
+
+Projection Query to load multiple related entities (Result is same as ThenInclude)
+
+```C#
+var context = new SchoolContext();
+
+var stud = context.Students.Where(s => s.FirstName == "Bill")
+                        .Select(s => new
+                        {
+                            Student = s,
+                            Grade = s.Grade,
+                            GradeTeachers = s.Grade.Teachers
+                        })
+                        .FirstOrDefault();
+```
+
+<br />
+<br />
+
+### Saving Data in Connected Scenario
+
+Insert Data 
+
+<br />
+
+Create object, Add() to context and SaveChanges() to database
+
+```C#
+using (var context = new SchoolContext())
+{
+    var std = new Student()
+    {
+        FirstName = "Bill",
+        LastName = "Gates"
+    };
+    context.Students.Add(std);
+
+    // or
+    // context.Add<Student>(std);
+
+    context.SaveChanges();
+}
+```
+
+<br />
+
+Updating Data 
+
+<br />
+
+Retrieve object, update object and SaveChanges() to database. NB: Only propeties 
+whose **EntityState** is **Modified** shall be updated in the Database, the rest are ignored.
+
+```C#
+using (var context = new SchoolContext())
+{
+    var std = context.Students.First<Student>(); 
+    std.FirstName = "Steve";
+    context.SaveChanges();
+}
+```
+
+<br />
+
+Deleting Data 
+
+<br />
+
+Retrieve object, remove object and SaveChanges() to database. 
+
+```C#
+using (var context = new SchoolContext())
+{
+    var std = context.Students.First<Student>();
+    context.Students.Remove(std);
+
+    // or
+    // context.Remove<Student>(std);
+
+    context.SaveChanges();
+}
+```
+
+<br />
+<br />
+
+### One to Many Relationship
+
+Convention 1: Add a **reference** navigation property to Student class referring to the Grade class.
+
+```C#
+public class Student
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+   
+    public Grade Grade { get; set; }
+}
+
+public class Grade
+{
+    public int GradeId { get; set; }
+    public string GradeName { get; set; }
+    public string Section { get; set; }
+}
+```
+
+<br />
+
+Convention 2: Add a **collection** navigation property to Grade class referring to the Student class.
+
+```C#
+public class Student
+{
+    public int StudentId { get; set; }
+    public string StudentName { get; set; }
+}
+
+public class Grade
+{
+    public int GradeId { get; set; }
+    public string GradeName { get; set; }
+    public string Section { get; set; }
+
+    public ICollection<Student> Students { get; set; } 
+}
+```
+
+<br />
+
+Convention 3: Add a **reference** and a **collection** navigation property. (Apply convention 1 & 2)
+
+```c#
+public class Student
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    
+    public Grade Grade { get; set; }
+}
+
+public class Grade
+{
+    public int GradeID { get; set; }
+    public string GradeName { get; set; }
+    
+    public ICollection<Student> Students { get; set; }
+}
+```
+
+<br />
+
+
+Convention 3: Add a **reference** and a **collection** navigation property. (Apply convention 1 & 2)
+
+```c#
+public class Student
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    
+    public Grade Grade { get; set; }
+}
+
+public class Grade
+{
+    public int GradeID { get; set; }
+    public string GradeName { get; set; }
+    
+    public ICollection<Student> Students { get; set; }
+}
+```
+
+<br />
+
