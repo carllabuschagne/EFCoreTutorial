@@ -139,6 +139,88 @@ class Program
 		}
 	}
 }
-``
+```
 
+<br />
+<br />
+
+Querying in Entity Framework Core
+
+<br />
+
+LINQ-to-Entities
+
+```C#
+var context = new SchoolContext();
+    var studentsWithSameName = context.Students
+                                      .Where(s => s.FirstName == "Dave")
+                                      .ToList();
+```
+
+<br />
+
+### Includes
+
+Specify a reference property to be loaded
+
+```C#
+var context = new SchoolContext();
+
+var studentWithGrade = context.Students
+                           .Where(s => s.FirstName == "Dave")
+                           .Include(s => s.Grade)
+                           .FirstOrDefault();
+```
+
+<br />
+
+Specify a Property to load
+
+```C#
+var context = new SchoolContext();
+
+var studentWithGrade = context.Students
+                        .Where(s => s.FirstName == "Bill")
+                        .Include("Grade")
+                        .FirstOrDefault();
+```
+
+<br />
+
+Use a SQL String
+
+```C#
+var context = new SchoolContext();
+
+var studentWithGrade = context.Students
+                        .FromSql("Select * from Students where FirstName ='Bill'")
+                        .Include(s => s.Grade)
+                        .FirstOrDefault();  
+```
+
+<br />
+
+Multiple Include to load multiple properties of the same entity.
+
+```C#
+var context = new SchoolContext();
+
+var studentWithGrade = context.Students.Where(s => s.FirstName == "Bill")
+                        .Include(s => s.Grade)
+                        .Include(s => s.StudentCourses)
+                        .FirstOrDefault();
+```
+
+<br />
+
+ThenInclude to load multiple levels of related entities.
+
+```C#
+var context = new SchoolContext();
+
+var student = context.Students.Where(s => s.FirstName == "Bill")
+                        .Include(s => s.Grade)
+                            .ThenInclude(g => g.Teachers)
+                        .FirstOrDefault();
+```
 
